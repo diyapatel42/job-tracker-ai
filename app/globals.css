@@ -1,26 +1,33 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+@theme {
+  --color-background: hsl(60 20% 98%);
+  --color-foreground: hsl(90 10% 10%);
+  --color-card: hsl(0 0% 100%);
+  --color-card-foreground: hsl(90 10% 10%);
+  --color-primary: hsl(97 37% 29%);
+  --color-primary-foreground: hsl(60 20% 98%);
+  --color-secondary: hsl(90 15% 93%);
+  --color-secondary-foreground: hsl(90 10% 15%);
+  --color-muted: hsl(90 10% 93%);
+  --color-muted-foreground: hsl(90 5% 45%);
+  --color-accent: hsl(90 15% 93%);
+  --color-accent-foreground: hsl(90 10% 15%);
+  --color-destructive: hsl(0 72% 51%);
+  --color-destructive-foreground: hsl(60 20% 98%);
+  --color-border: hsl(90 10% 85%);
+  --color-input: hsl(90 10% 85%);
+  --color-ring: hsl(97 37% 29%);
+  --radius: 0.5rem;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  border-color: var(--color-border);
 }

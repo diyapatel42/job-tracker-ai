@@ -2,7 +2,9 @@
 
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import JobForm from '@/components/forms/JobForm'
 import JobCard from '@/components/ui/JobCard'
 import StatsBar from '@/components/ui/StatsBar'
@@ -15,8 +17,12 @@ interface Job {
   url?: string
   salary?: string
   notes?: string
+  experienceYears?: string
+  field?: string
   appliedDate: string
 }
+
+type SortOption = 'newest' | 'oldest' | 'company' | 'status'
 
 export default function DashboardPage() {
   const { data: session, status } = useSession()
@@ -24,6 +30,9 @@ export default function DashboardPage() {
   const [jobs, setJobs] = useState<Job[]>([])
   const [showForm, setShowForm] = useState(false)
   const [loading, setLoading] = useState(true)
+  const [search, setSearch] = useState('')
+  const [sort, setSort] = useState<SortOption>('newest')
+  const [filterStatus, setFilterStatus] = useState('ALL')
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -54,33 +63,69 @@ export default function DashboardPage() {
     setJobs(jobs.filter(j => j.id !== id))
   }
 
-  async function updateStatus(id: string, status: string) {
+  async function updateStatus(id: string, newStatus: string) {
     const res = await fetch(`/api/jobs/${id}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
         'x-user-id': (session?.user as any)?.id
       },
-      body: JSON.stringify({ status })
+      body: JSON.stringify({ status: newStatus })
     })
     const updated = await res.json()
     setJobs(jobs.map(j => j.id === id ? updated : j))
   }
 
+  const filteredJobs = useMemo(() => {
+    let result = [...jobs]
+
+    if (search.trim()) {
+      const q = search.toLowerCase()
+      result = result.filter(j =>
+        j.company.toLowerCase().includes(q) ||
+        j.role.toLowerCase().includes(q) ||
+        (j.field && j.field.toLowerCase().includes(q)) ||
+        (j.notes && j.notes.toLowerCase().includes(q))
+      )
+    }
+
+    if (filterStatus !== 'ALL') {
+      result = result.filter(j => j.status === filterStatus)
+    }
+
+    switch (sort) {
+      case 'newest':
+        result.sort((a, b) => new Date(b.appliedDate).getTime() - new Date(a.appliedDate).getTime())
+        break
+      case 'oldest':
+        result.sort((a, b) => new Date(a.appliedDate).getTime() - new Date(b.appliedDate).getTime())
+        break
+      case 'company':
+        result.sort((a, b) => a.company.localeCompare(b.company))
+        break
+      case 'status':
+        const order = ['INTERVIEWING', 'OFFERED', 'APPLIED', 'SAVED', 'REJECTED']
+        result.sort((a, b) => order.indexOf(a.status) - order.indexOf(b.status))
+        break
+    }
+
+    return result
+  }, [jobs, search, sort, filterStatus])
+
   if (status === 'loading' || loading) {
-    return <p className="text-center mt-20 text-gray-500">Loading...</p>
+    return <p className="text-center mt-20 text-muted-foreground">Loading...</p>
   }
 
   return (
-    <div className="space-y-6 mt-6">
+    <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Your Applications</h1>
-        <button
-          onClick={() => setShowForm(!showForm)}
-          className="px-4 py-2 bg-gray-900 text-white rounded hover:bg-gray-700"
-        >
-          {showForm ? 'Cancel' : '+ Add Job'}
-        </button>
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight">Applications</h1>
+          <p className="text-sm text-muted-foreground mt-1">{jobs.length} total</p>
+        </div>
+        <Button onClick={() => setShowForm(!showForm)}>
+          {showForm ? 'Cancel' : 'Add Application'}
+        </Button>
       </div>
 
       {showForm && (
@@ -95,19 +140,46 @@ export default function DashboardPage() {
 
       <StatsBar jobs={jobs} />
 
-      {jobs.length === 0 ? (
-        <p className="text-center text-gray-400 mt-10">
-          No applications yet. Add your first one.
-        </p>
+      <div className="flex items-center gap-3">
+        <Input
+          placeholder="Search company, role, field..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="max-w-xs"
+        />
+        <select
+          value={filterStatus}
+          onChange={(e) => setFilterStatus(e.target.value)}
+          className="flex h-9 rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+        >
+          <option value="ALL">All statuses</option>
+          <option value="SAVED">Saved</option>
+          <option value="APPLIED">Applied</option>
+          <option value="INTERVIEWING">Interviewing</option>
+          <option value="OFFERED">Offered</option>
+          <option value="REJECTED">Rejected</option>
+        </select>
+        <select
+          value={sort}
+          onChange={(e) => setSort(e.target.value as SortOption)}
+          className="flex h-9 rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+        >
+          <option value="newest">Newest first</option>
+          <option value="oldest">Oldest first</option>
+          <option value="company">Company A-Z</option>
+          <option value="status">Priority</option>
+        </select>
+      </div>
+
+      {filteredJobs.length === 0 ? (
+        <div className="text-center py-16">
+          <p className="text-muted-foreground">{search || filterStatus !== 'ALL' ? 'No matching applications.' : 'No applications yet.'}</p>
+          <p className="text-sm text-muted-foreground mt-1">{search || filterStatus !== 'ALL' ? 'Try a different search or filter.' : 'Add your first one to get started.'}</p>
+        </div>
       ) : (
-        <div className="grid gap-4">
-          {jobs.map(job => (
-            <JobCard
-              key={job.id}
-              job={job}
-              onDelete={deleteJob}
-              onStatusChange={updateStatus}
-            />
+        <div className="grid gap-3">
+          {filteredJobs.map(job => (
+            <JobCard key={job.id} job={job} onDelete={deleteJob} onStatusChange={updateStatus} />
           ))}
         </div>
       )}
