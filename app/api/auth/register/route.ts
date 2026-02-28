@@ -23,9 +23,3 @@ export async function POST(req: NextRequest) {
 
   return NextResponse.json({ id: user.id, email: user.email }, { status: 201 })
 }
-```
-
-**Add to your `.env`:**
-```
-NEXTAUTH_SECRET=generate-a-random-string-here
-NEXTAUTH_URL=http://localhost:3000
