@@ -11,17 +11,13 @@ export const metadata: Metadata = {
   description: 'AI-powered job application tracker'
 }
 
-export default function RootLayout({
-  children
-}: {
-  children: React.ReactNode
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={`${inter.className} min-h-screen`}>
         <Providers>
           <Navbar />
-          <main className="max-w-6xl mx-auto p-4">
+          <main className="max-w-5xl mx-auto px-6 py-8">
             {children}
           </main>
         </Providers>
