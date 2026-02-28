@@ -17,7 +17,9 @@ export default function JobForm({ userId, onSave }: JobFormProps) {
     status: 'SAVED',
     url: '',
     salary: '',
-    notes: ''
+    notes: '',
+    experienceYears: '',
+    field: ''
   })
 
   async function handleParse() {
@@ -40,7 +42,9 @@ export default function JobForm({ userId, onSave }: JobFormProps) {
         role: data.role || prev.role,
         salary: data.salary || prev.salary,
         url: data.url || prev.url,
-        notes: data.notes || prev.notes
+        notes: data.notes || prev.notes,
+        experienceYears: data.experienceYears || prev.experienceYears,
+        field: data.field || prev.field
       }))
     } catch (err) {
       console.error('Parse failed:', err)
@@ -97,34 +101,17 @@ export default function JobForm({ userId, onSave }: JobFormProps) {
         <div className="grid grid-cols-2 gap-3">
           <div>
             <label className="block text-sm font-medium mb-1">Company *</label>
-            <input
-              name="company"
-              value={formData.company}
-              onChange={handleChange}
-              required
-              className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-900"
-            />
+            <input name="company" value={formData.company} onChange={handleChange} required className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-900" />
           </div>
           <div>
             <label className="block text-sm font-medium mb-1">Role *</label>
-            <input
-              name="role"
-              value={formData.role}
-              onChange={handleChange}
-              required
-              className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-900"
-            />
+            <input name="role" value={formData.role} onChange={handleChange} required className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-900" />
           </div>
         </div>
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-2 gap-3">
           <div>
             <label className="block text-sm font-medium mb-1">Status</label>
-            <select
-              name="status"
-              value={formData.status}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-900"
-            >
+            <select name="status" value={formData.status} onChange={handleChange} className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-900">
               <option value="SAVED">Saved</option>
               <option value="APPLIED">Applied</option>
               <option value="INTERVIEWING">Interviewing</option>
@@ -134,40 +121,28 @@ export default function JobForm({ userId, onSave }: JobFormProps) {
           </div>
           <div>
             <label className="block text-sm font-medium mb-1">Salary</label>
-            <input
-              name="salary"
-              value={formData.salary}
-              onChange={handleChange}
-              placeholder="e.g. $80k-100k"
-              className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-900"
-            />
+            <input name="salary" value={formData.salary} onChange={handleChange} placeholder="e.g. $80k-100k" className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-900" />
+          </div>
+        </div>
+        <div className="grid grid-cols-3 gap-3">
+          <div>
+            <label className="block text-sm font-medium mb-1">Experience Required</label>
+            <input name="experienceYears" value={formData.experienceYears} onChange={handleChange} placeholder="e.g. 3+ years" className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-900" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Field</label>
+            <input name="field" value={formData.field} onChange={handleChange} placeholder="e.g. Frontend, DevOps" className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-900" />
           </div>
           <div>
             <label className="block text-sm font-medium mb-1">Job URL</label>
-            <input
-              name="url"
-              value={formData.url}
-              onChange={handleChange}
-              placeholder="https://..."
-              className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-900"
-            />
+            <input name="url" value={formData.url} onChange={handleChange} placeholder="https://..." className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-900" />
           </div>
         </div>
         <div>
           <label className="block text-sm font-medium mb-1">Notes</label>
-          <textarea
-            name="notes"
-            value={formData.notes}
-            onChange={handleChange}
-            rows={2}
-            className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-900"
-          />
+          <textarea name="notes" value={formData.notes} onChange={handleChange} rows={2} className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-900" />
         </div>
-        <button
-          type="submit"
-          disabled={loading}
-          className="px-4 py-2 bg-gray-900 text-white rounded hover:bg-gray-700 disabled:opacity-50"
-        >
+        <button type="submit" disabled={loading} className="px-4 py-2 bg-gray-900 text-white rounded hover:bg-gray-700 disabled:opacity-50">
           {loading ? 'Saving...' : 'Save Job'}
         </button>
       </form>

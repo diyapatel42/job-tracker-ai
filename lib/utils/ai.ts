@@ -12,7 +12,7 @@ export async function parseJobPosting(text: string) {
       {
         role: 'user',
         content: `Extract job details from this posting. Return ONLY valid JSON, no markdown, no backticks, no explanation. Use this exact format:
-{"company":"","role":"","salary":"","url":"","notes":""}
+{"company":"","role":"","salary":"","url":"","notes":"","experienceYears":"","field":""}
 If a field isn't found, use empty string. For notes, include a 1-line summary of key requirements.
 
 Job posting:

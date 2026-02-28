@@ -17,17 +17,19 @@ model User {
 }
 
 model Job {
-  id          String    @id @default(cuid())
-  company     String
-  role        String
-  status      JobStatus @default(SAVED)
-  url         String?
-  salary      String?
-  notes       String?
-  appliedDate DateTime  @default(now())
-  updatedDate DateTime  @updatedAt
-  userId      String
-  user        User      @relation(fields: [userId], references: [id])
+  id              String    @id @default(cuid())
+  company         String
+  role            String
+  status          JobStatus @default(SAVED)
+  url             String?
+  salary          String?
+  notes           String?
+  experienceYears String?
+  field           String?
+  appliedDate     DateTime  @default(now())
+  updatedDate     DateTime  @updatedAt
+  userId          String
+  user            User      @relation(fields: [userId], references: [id])
 }
 
 enum JobStatus {
