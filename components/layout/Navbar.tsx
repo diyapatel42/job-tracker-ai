@@ -8,34 +8,19 @@ export default function Navbar() {
 
   return (
     <nav className="flex items-center justify-between p-4 border-b border-gray-200">
-      <Link href="/" className="text-xl font-bold">
-        JobTracker AI
-      </Link>
+      <Link href="/" className="text-xl font-bold">JobTracker AI</Link>
       <div className="flex items-center gap-4">
         {session ? (
           <>
-            <Link href="/dashboard" className="hover:underline">
-              Dashboard
-            </Link>
+            <Link href="/dashboard" className="hover:underline">Dashboard</Link>
+            <Link href="/dashboard/analyze" className="hover:underline">Analyzer</Link>
             <span className="text-sm text-gray-500">{session.user?.email}</span>
-            <button
-              onClick={() => signOut()}
-              className="px-3 py-1 text-sm bg-gray-900 text-white rounded hover:bg-gray-700"
-            >
-              Sign Out
-            </button>
+            <button onClick={() => signOut()} className="px-3 py-1 text-sm bg-gray-900 text-white rounded hover:bg-gray-700">Sign Out</button>
           </>
         ) : (
           <>
-            <Link href="/auth/login" className="hover:underline">
-              Login
-            </Link>
-            <Link
-              href="/auth/register"
-              className="px-3 py-1 bg-gray-900 text-white rounded hover:bg-gray-700"
-            >
-              Sign Up
-            </Link>
+            <Link href="/auth/login" className="hover:underline">Login</Link>
+            <Link href="/auth/register" className="px-3 py-1 bg-gray-900 text-white rounded hover:bg-gray-700">Sign Up</Link>
           </>
         )}
       </div>
