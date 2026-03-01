@@ -34,8 +34,7 @@ interface JobCardProps {
 export default function JobCard({ job, onDelete, onStatusChange }: JobCardProps) {
   const applied = new Date(job.appliedDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
 
-  const linkEl = job.url ? <a href={job.url} target="_blank" rel="noopener noreferrer" className="text-sm text-muted-foreground hover:text-foreground underline transition-colors">View posting</a> : null
-
+  const linkEl = job.url ? <span className="text-xs text-muted-foreground truncate max-w-[200px]" title={job.url}>{job.url}</span> : null
   return (
     <Card>
       <CardContent className="py-4">
